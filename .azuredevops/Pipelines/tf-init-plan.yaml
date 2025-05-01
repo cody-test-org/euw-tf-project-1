@@ -13,6 +13,6 @@ jobs:
     backend_config: ../config/dev-poc/dev.backend.tfbackend
     known_host: $(known_host)
     ssh_public_key: $(ssh_public_key)
-    sshKeySecureFile: 'tf-modules'
+    sshKeySecureFile: 'id_rsa_ado'
     tf-subscription: 'tf-subscription'
     
