@@ -50,6 +50,9 @@ jobs:
       deploy:
         steps:
         - checkout: self
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: 'latest'
         - task: AzureCLI@2
           displayName: Azure CLI Login
           inputs:
