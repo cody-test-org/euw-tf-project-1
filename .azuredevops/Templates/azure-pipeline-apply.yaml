@@ -39,9 +39,6 @@ parameters:
   default: ''
   type: string
 
-variables:
-- group: TF-Var-Group-1
-
 jobs:
 - deployment: Terraform_${{ parameters.env }}
   environment: ${{ parameters.env }}
