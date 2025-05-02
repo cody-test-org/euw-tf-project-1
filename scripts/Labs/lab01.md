@@ -12,6 +12,20 @@
 - [ ] An Azure Subscription with Owner Permissions
 - [ ] Install Terraform CLI
 - [ ] Clone the Repository to your Local Machine
+- [ ] Create an Azure Service Principal
+```
+az ad sp create-for-rbac --name "TerraformServicePrincipal" --role Contributor --scopes /subscriptions/YOUR_SUBSCRIPTION_ID --output json
+```
+- [ ] Copy the output of the above command and save it in a secure location. The output will look like this:
+```json
+{
+  "appId": "YOUR_CLIENT_ID",
+  "displayName": "TerraformServicePrincipal",
+  "name": "http://TerraformServicePrincipal",
+  "client_secret": "YOUR_CLIENT_SECRET",
+  "tenant": "YOUR_TENANT_ID"
+}
+```
 - [ ] Install Azure CLI
 ```
 log in to CLI: az login --service-principal --username APP_ID --password CLIENT_SECRET --tenant TENANT_ID
@@ -22,23 +36,11 @@ az account set <subscription_id>
 #confirm subscription
 az account show --output table
 ```
-- [ ] Create an Azure Service Principal
-```
-az ad sp create-for-rbac --name "TerraformServicePrincipal" --role Contributor --scopes /subscriptions/YOUR_SUBSCRIPTION_ID --output json
-```
-- [ ] Copy the output of the above command and save it in a secure location. The output will look like this:
-```json
-{
-  "appId": "YOUR_CLIENT_ID",
-  "displayName": "TerraformServicePrincipal",
-  "name": "http://TerraformServicePrincipal,
-  "client_secret": ""YOUR_CLIENT_SECRET",
-  "tenant": "YOUR_TENANT_ID"
-}
-```
+
 - [ ] Assign the Service Principal with Contributor role to the subscription
-- Export the following Environment Variables for Terraform to run locally using the Service Principal against your Azure Subscription
-Bash:
+- [ ] Export the following Environment Variables for Terraform to run locally using the Service Principal against your Azure Subscription
+
+- Bash:
 ```
 export ARM_SUBSCRIPTION_ID=<YOUR_SUBSCRIPTION_ID>
 export ARM_TENANT_ID=<YOUR_TENANT_ID>
@@ -46,7 +48,7 @@ export ARM_CLIENT_ID=<YOUR_CLIENT_ID>
 export ARM_CLIENT_SECRET=<YOUR_CLIENT_SECRET>
 ```
 
-PowerShell:
+- PowerShell:
 ```
 $env:ARM_SUBSCRIPTION_ID="<YOUR_SUBSCRIPTION_ID>"
 $env:ARM_TENANT_ID="<YOUR_TENANT_ID>"
