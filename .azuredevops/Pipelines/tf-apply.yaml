@@ -15,10 +15,11 @@ stages:
       tf-app-id: $(tf-app-id)
       env: dev
       backend_config: ../config/dev-poc/dev.backend.tfbackend
-      known_host: $(known_host)
-      ssh_public_key: $(ssh_public_key)
-      sshKeySecureFile: 'tf-modules'
       tf-subscription: 'tf-subscription'
+      # known_host: $(known_host)
+      # ssh_public_key: $(ssh_public_key)
+      # sshKeySecureFile: 'tf-modules'
+
 
 - stage: Uat
   dependsOn:
@@ -32,7 +33,7 @@ stages:
       tf-app-id: $(tf-app-id)
       env: uat
       backend_config: ../config/uat-poc/uat.backend.tfbackend
-      known_host: $(known_host)
-      ssh_public_key: $(ssh_public_key)
-      sshKeySecureFile: 'tf-modules'
       tf-subscription: 'tf-subscription'
+      # known_host: $(known_host)
+      # ssh_public_key: $(ssh_public_key)
+      # sshKeySecureFile: 'tf-modules'
