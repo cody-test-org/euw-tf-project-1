@@ -17,14 +17,14 @@ parameters:
 - name: backend_config
   type: string
   default: ''
-- name: known_host
-  default: ''
-  type: string
-- name: ssh_public_key
-  default: ''
-  type: string
-- name: sshKeySecureFile
-  default: ''
+# - name: known_host
+#   default: ''
+#   type: string
+# - name: ssh_public_key
+#   default: ''
+#   type: string
+# - name: sshKeySecureFile
+#   default: ''
   type: string
 - name: tf-subscription
   default: 'tf-subscription'
