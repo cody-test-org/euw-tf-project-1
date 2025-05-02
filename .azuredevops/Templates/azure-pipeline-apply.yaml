@@ -99,7 +99,7 @@ jobs:
             echo secret is $ARM_CLIENT_SECRET     
             cd scripts
             echo Starting TF Plan...
-            terraform plan -var-file=../config/${{ parameters.env }}-poc/parameters.tf -var-file=../config/${{ parameters.env }}-poc/applicationinsights.auto.tfvars -var-file=../config/${{ parameters.env }}-poc/resourcegroups.auto.tfvars -out TFPLAN
+            terraform plan -var-file=../config/${{ parameters.env }}-poc/parameters.auto.tfvars -var-file=../config/${{ parameters.env }}-poc/applicationinsights.auto.tfvars -var-file=../config/${{ parameters.env }}-poc/resourcegroups.auto.tfvars -out TFPLAN
             # -var subscription_id=$(tf-app-subscription-id) -var tenant_id=$(tf-app-tenant-id)  
         - script: |
             export ARM_SUBSCRIPTION_ID=${{ parameters ['tf-app-subscription-id'] }}
