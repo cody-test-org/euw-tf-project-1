@@ -17,15 +17,15 @@ parameters:
 - name: backend_config
   type: string
   default: ''
-- name: known_host
-  default: ''
-  type: string
-- name: ssh_public_key
-  default: ''
-  type: string
-- name: sshKeySecureFile
-  default: ''
-  type: string
+# - name: known_host
+#   default: ''
+#   type: string
+# - name: ssh_public_key
+#   default: ''
+#   type: string
+# - name: sshKeySecureFile
+#   default: ''
+#   type: string
 - name: tf-subscription
   default: 'tf-subscription'
   type: string
@@ -39,7 +39,6 @@ parameters:
   default: ''
   type: string
 
-
 jobs:
 - deployment: Terraform_${{ parameters.env }}
   environment: ${{ parameters.env }}
@@ -51,6 +50,9 @@ jobs:
       deploy:
         steps:
         - checkout: self
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: 'latest'
         - task: AzureCLI@2
           displayName: Azure CLI Login
           inputs:
@@ -60,17 +62,17 @@ jobs:
             inlineScript: |
               az --version
               az account show
-        - task: InstallSSHKey@0
-          condition: >
-            and(
-              ne(parameters['known_host'], ''),
-              ne(parameters['ssh_public_key'], ''),
-              ne(parameters['sshKeySecureFile'], '')
-            )
-          inputs:
-            knownHostsEntry: ${{ parameters['known_host'] }}
-            sshPublicKey: ${{ parameters['ssh_public_key'] }}
-            sshKeySecureFile: ${{ parameters['sshKeySecureFile'] }}
+        # - task: InstallSSHKey@0
+        #   condition: >
+        #     and(
+        #       ne(parameters['known_host'], ''),
+        #       ne(parameters['ssh_public_key'], ''),
+        #       ne(parameters['sshKeySecureFile'], '')
+        #     )
+        #   inputs:
+        #     knownHostsEntry: ${{ parameters['known_host'] }}
+        #     sshPublicKey: ${{ parameters['ssh_public_key'] }}
+        #     sshKeySecureFile: ${{ parameters['sshKeySecureFile'] }}
         - script: |                                   
             export ARM_SUBSCRIPTION_ID=${{ parameters ['tf-app-subscription-id'] }}
             export ARM_TENANT_ID=${{ parameters ['tf-app-tenant-id'] }}
@@ -97,7 +99,8 @@ jobs:
             echo secret is $ARM_CLIENT_SECRET     
             cd scripts
             echo Starting TF Plan...
-            terraform plan -var-file=../config/${{ parameters.env }}-poc/parameters.tf -var-file=../config/${{ parameters.env }}-poc/applicationinsights.auto.tfvars -var-file=../config/${{ parameters.env }}-poc/resourcegroups.auto.tfvars -var subscription_id=$(tf-app-subscription-id) -var tenant_id=$(tf-app-tenant-id) -out TFPLAN
+            terraform plan -var-file=../config/${{ parameters.env }}-poc/parameters.auto.tfvars -var-file=../config/${{ parameters.env }}-poc/applicationinsights.auto.tfvars -var-file=../config/${{ parameters.env }}-poc/resourcegroups.auto.tfvars -out TFPLAN
+            # -var subscription_id=$(tf-app-subscription-id) -var tenant_id=$(tf-app-tenant-id)  
         - script: |
             export ARM_SUBSCRIPTION_ID=${{ parameters ['tf-app-subscription-id'] }}
             export ARM_TENANT_ID=${{ parameters ['tf-app-tenant-id'] }}

@@ -2,8 +2,12 @@ trigger: none
 pr:
 - main
 
+variables:
+- group: TF-Var-Group-1
+
 jobs:
 - template: ../Templates/azure-pipeline.yaml
+
   parameters:
     tf-app-subscription-id: $(tf-app-subscription-id)
     tf-app-tenant-id: $(tf-app-tenant-id)

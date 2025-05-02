@@ -4,10 +4,15 @@ trigger:
     - main
 pr: none
 
+variables:
+- group: TF-Var-Group-1
+
 stages:
 - stage: Dev
   jobs:
   - template: ../Templates/azure-pipeline-apply.yaml
+    variables:
+    - group: TF-Var-Group-1
     parameters:
       tf-app-subscription-id: $(tf-app-subscription-id)
       tf-app-tenant-id: $(tf-app-tenant-id)
@@ -26,6 +31,7 @@ stages:
   - Dev
   jobs:
   - template: ../Templates/azure-pipeline-apply.yaml
+
     parameters:
       tf-app-subscription-id: $(tf-app-subscription-id)
       tf-app-tenant-id: $(tf-app-tenant-id)
