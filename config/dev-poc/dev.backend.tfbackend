@@ -1,4 +1,4 @@
-resource_group_name  = "ado-tf-rg"
-storage_account_name = "satfstate23508"
+resource_group_name  = "ado-tfstate-rg"
+storage_account_name = "satfstate23509"
 container_name       = "tfstate"
-key                  = "poc-tfstate"
+key                  = "dev-tfstate"

@@ -47,10 +47,16 @@ jobs:
         az --version
         az account show
   - task: InstallSSHKey@0
+    condition: >
+      and(
+        ne(parameters['known_host'], ''),
+        ne(parameters['ssh_public_key'], ''),
+        ne(parameters['sshKeySecureFile'], '')
+      )
     inputs:
-      knownHostsEntry: ${{ parameters ['known_host'] }}
-      sshPublicKey: ${{ parameters ['ssh_public_key'] }}
-      sshKeySecureFile: ${{ parameters ['sshKeySecureFile'] }}
+      knownHostsEntry: ${{ parameters['known_host'] }}
+      sshPublicKey: ${{ parameters['ssh_public_key'] }}
+      sshKeySecureFile: ${{ parameters['sshKeySecureFile'] }}
   - script: |                                   
       export ARM_SUBSCRIPTION_ID=${{ parameters ['tf-app-subscription-id'] }}
       export ARM_TENANT_ID=${{ parameters ['tf-app-tenant-id'] }}
