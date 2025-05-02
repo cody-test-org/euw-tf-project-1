@@ -25,7 +25,7 @@ parameters:
 #   type: string
 # - name: sshKeySecureFile
 #   default: ''
-  type: string
+#   type: string
 - name: tf-subscription
   default: 'tf-subscription'
   type: string
