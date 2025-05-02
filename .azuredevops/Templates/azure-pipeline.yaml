@@ -40,7 +40,7 @@ jobs:
   - checkout: self
   - task: TerraformInstaller@0
     inputs:
-    terraformVersion: 'latest'
+      terraformVersion: 'latest'
   - task: AzureCLI@2
     displayName: Azure CLI Login
     inputs:
