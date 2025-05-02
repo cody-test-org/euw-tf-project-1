@@ -44,6 +44,8 @@ jobs:
 - deployment: Terraform_${{ parameters.env }}
   environment: ${{ parameters.env }}
   displayName: Terraform_${{ parameters.env }}
+  variables:
+  - group: TF-Var-Group-1
   pool:
     vmImage: ubuntu-latest
   strategy:
