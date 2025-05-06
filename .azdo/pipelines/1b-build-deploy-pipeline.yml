@@ -1,0 +1,64 @@
+# ----------------------------------------------------------------------------------------------------
+# Web App Build-Deploy Pipeline
+# ----------------------------------------------------------------------------------------------------
+trigger:
+- none   # - master
+
+variables:
+    buildConfiguration: 'Release'
+
+# ----------------------------------------------------------------------------------------------------
+stages:
+- stage: BuildStage
+  jobs:
+  - job: BuildJob
+    pool:
+      name: default
+    steps:
+    - script: dotnet restore
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: build
+        projects: '**/*.csproj'
+        arguments: '--configuration Release'
+    - task: DotNetCoreCLI@2
+      displayName: Test
+      inputs:
+        command: test
+        projects: '**/*Tests/*.csproj'
+        arguments: '--configuration $(BuildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: Publish
+      inputs:
+        command: publish
+        publishWebProjects: True
+        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+        zipAfterPublish: True     
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'
+        ArtifactName: 'drop'
+    condition: succeededOrFailed()
+
+# ----------------------------------------------------------------------------------------------------
+- stage: DeployStage
+  jobs:
+  - job: DeployJob
+    pool:
+      name: default
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: AzureRmWebAppDeployment@5
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'PUL-Connection'
+        appType: 'webApp'
+        WebAppName: 'pul-yaml-999999999'
+        packageForLinux: '$(System.ArtifactsDirectory)/drop/*.zip'

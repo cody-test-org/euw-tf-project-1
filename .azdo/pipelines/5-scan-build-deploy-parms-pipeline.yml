@@ -1,0 +1,42 @@
+# ----------------------------------------------------------------------------------------------------
+# Full Web App Scan/Build/Deploy Pipeline using templates
+# ----------------------------------------------------------------------------------------------------
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+
+trigger:
+- none   # - master
+
+# ----------------------------------------------------------------------------------------------------
+parameters:
+- name: runCodeScan
+  displayName: Run Code Scan
+  type: boolean
+  default: true
+- name: deployWebApp
+  displayName: Deploy Web App
+  type: boolean
+  default: true
+- name: studentIdNumber
+  displayName: Student ID Number
+  type: number
+  default: 999999999
+
+# ----------------------------------------------------------------------------------------------------
+stages:
+- ${{ if eq(parameters.runCodeScan, true) }}:
+  - stage: ScanStage
+    jobs:
+    - template: ./templates/steps-scan-code-template.yml
+
+# ----------------------------------------------------------------------------------------------------
+- stage: BuildStage
+  jobs:
+  - template: ./templates/steps-build-template.yml
+
+# ----------------------------------------------------------------------------------------------------
+- ${{ if eq(parameters.deployWebApp, true) }}:
+  - stage: DeployStage
+    jobs:
+    - template: ./templates/steps-deploy-template.yml
+      parameters:
+        appName:  'pul-yaml-${{ parameters.studentIdNumber }}'

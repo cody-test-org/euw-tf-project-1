@@ -1,0 +1,10 @@
+# ----------------------------------------------------------------------------------------------------
+# Variables common to all environments
+# ----------------------------------------------------------------------------------------------------
+variables:
+  - name: resourceGroupPrefix
+    value: 'rg-tf-demo'
+  - name: location
+    value: 'West US'
+  - name: appName
+    value: 'tfdemo'

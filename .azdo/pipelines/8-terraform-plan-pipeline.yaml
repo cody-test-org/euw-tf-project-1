@@ -1,0 +1,64 @@
+# ----------------------------------------------------------------------------------------------------
+# Pipeline to run a Terraform Init and Plan
+# ----------------------------------------------------------------------------------------------------
+# This pipeline uses a template that expects variables in a variable group - see template for details!
+# ----------------------------------------------------------------------------------------------------
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+
+pool:
+  vmImage: ubuntu-latest
+
+trigger: none
+
+# ----------------------------------------------------------------------------------------------------
+parameters:
+- name: deployToEnvironment
+  displayName: Deploy To Environment
+  type: string
+  values:
+    - dev
+    - prod
+  default: dev
+
+- name: variableSetName
+  displayName: Variable Set to Use
+  type: string
+  values:
+    - dev
+    - prod
+    - dynamic
+  default: dynamic
+
+- name: tfAction
+  displayName: Terraform Action
+  type: string
+  values:
+    - plan
+    - apply
+  default: plan
+
+# ----------------------------------------------------------------------------------------------------
+variables:
+  - template: vars/var-service-connections.yml
+
+# ----------------------------------------------------------------------------------------------------
+jobs:
+- ${{ if eq(parameters.tfAction, 'plan') }}:
+  - template: ./templates/tf-job-init-and-plan-template.yaml
+    parameters:
+      env: ${{ parameters.deployToEnvironment }}
+      serviceConnectionName: $(serviceConnectionName)
+      variableSetName: ${{ parameters.variableSetName }}
+      terraFormPath: '/infra/tf'
+      configFolderName: 'config/${{ parameters.variableSetName }}'
+      backendConfigFileName: '${{ parameters.variableSetName }}.backend.tfbackend'
+
+- ${{ if eq(parameters.tfAction, 'apply') }}:
+  - template: ./templates/tf-job-apply-template.yaml
+    parameters:
+      env: ${{ parameters.deployToEnvironment }}
+      serviceConnectionName: $(serviceConnectionName)
+      variableSetName: ${{ parameters.variableSetName }}
+      terraFormPath: '/infra/tf'
+      configFolderName: 'config/${{ parameters.variableSetName }}'
+      backendConfigFileName: '${{ parameters.variableSetName }}.backend.tfbackend'

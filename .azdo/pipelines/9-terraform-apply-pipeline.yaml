@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------------------------------------------
+# Pipeline to run a Terraform Init and Plan
+# ----------------------------------------------------------------------------------------------------
+# This pipeline uses a template that expects variables in a variable group - see template for details!
+# ----------------------------------------------------------------------------------------------------
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+
+pool:
+  vmImage: ubuntu-latest
+
+trigger: none
+
+# ----------------------------------------------------------------------------------------------------
+parameters:
+- name: deployToEnvironment
+  displayName: Deploy To Environment
+  type: string
+  values:
+    - dev
+    - prod
+  default: dev
+
+- name: variableSetName
+  displayName: Variable Set to Use
+  type: string
+  values:
+    - dev
+    - prod
+    - dynamic
+  default: dynamic
+
+# ----------------------------------------------------------------------------------------------------
+resources:
+  pipelines:
+  - pipeline: terraform.plan.pipeline  # internal identifier for the resource
+    source: 8-terraform-plan-pipeline  # name of the pipeline that produces an artifact
+    branch: main                       # should only allow builds from the main branch to be used
+
+# ----------------------------------------------------------------------------------------------------
+variables:
+  - template: vars/var-service-connections.yml
+
+# ----------------------------------------------------------------------------------------------------
+jobs:
+- template: ./templates/tf-job-apply-template.yaml
+  parameters:
+    env: ${{ parameters.deployToEnvironment }}
+    pipelineResourceIdentifier: 'terraform.plan.pipeline'
+    serviceConnectionName: $(serviceConnectionName)
+    variableSetName: ${{ parameters.variableSetName }}
+    terraFormPath: '/infra/tf'
+    configFolderName: 'config/${{ parameters.variableSetName }}'
+    backendConfigFileName: '${{ parameters.variableSetName }}.backend.tfbackend'

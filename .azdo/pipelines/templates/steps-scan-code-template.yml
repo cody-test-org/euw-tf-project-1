@@ -1,0 +1,35 @@
+# ----------------------------------------------------------------------------------------------------
+# Code Scanning Template
+# ----------------------------------------------------------------------------------------------------
+# Microsoft Secure DevOps Scan Task
+# To enable this, you must add Azure DevOps Extension to your Azure DevOps Organization
+# See https://marketplace.visualstudio.com/items?itemName=ms-securitydevops.microsoft-security-devops-azdevops
+# ----------------------------------------------------------------------------------------------------
+jobs:
+- job: ScanJob
+  displayName: Scan
+  pool:
+    name: default
+  steps:
+  - task: PowerShell@2
+    displayName: 'Display Variables'
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Host "${{ convertToJson(variables) }}"
+
+  - task: CmdLine@2
+    displayName: 'Display Files'
+    inputs:
+      script: |
+        echo "Directory Listing for $(Pipeline.Workspace)"
+        dir $(Pipeline.Workspace) /s
+
+  - task: UseDotNet@2
+    displayName: 'Use dotnet 8.0'
+    inputs:
+      version: 8.0.x
+
+  - task: MicrosoftSecurityDevOps@1
+    displayName: 'Run Microsoft Security DevOps'
+    continueOnError: true

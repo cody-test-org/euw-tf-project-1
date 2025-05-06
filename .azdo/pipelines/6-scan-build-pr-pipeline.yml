@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------------------------------
+# Pipeline to Scan and Build Code for a Pull Request
+# ----------------------------------------------------------------------------------------------------
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+
+# ----------------------------------------------------------------------------------------------------
+# FYI -> Set a required branch policy to run this on every check to main 
+# ----------------------------------------------------------------------------------------------------
+pr:
+- master
+
+# ----------------------------------------------------------------------------------------------------
+stages:
+jobs:
+- stage: ScanApplication
+  displayName: Scan Application
+  jobs:
+  - template: ./templates/steps-scan-code-template.yml
+
+# ----------------------------------------------------------------------------------------------------
+- stage: BuildApplication
+  displayName: Build Application
+  dependsOn: ScanApplication
+  jobs:
+  - template: ./templates/steps-build-template.yml
