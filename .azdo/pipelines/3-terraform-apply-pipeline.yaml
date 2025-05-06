@@ -33,7 +33,7 @@ parameters:
 resources:
   pipelines:
   - pipeline: terraform.plan.pipeline  # internal identifier for the resource
-    source: 8-terraform-plan-pipeline  # name of the pipeline that produces an artifact
+    source: 2-terraform-plan-pipeline  # name of the pipeline that produces an artifact
     branch: main                       # should only allow builds from the main branch to be used
 
 # ----------------------------------------------------------------------------------------------------
